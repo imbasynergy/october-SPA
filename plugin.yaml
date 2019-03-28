@@ -1,0 +1,6 @@
+plugin:
+    name: 'imbasynergy.octoberspa::lang.plugin.name'
+    description: 'imbasynergy.octoberspa::lang.plugin.description'
+    author: ImbaSynergy
+    icon: oc-icon-anchor
+    homepage: ''
