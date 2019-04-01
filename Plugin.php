@@ -1,4 +1,4 @@
-<?php namespace ImbaSynergy\OctoberSpa;
+<?php namespace Imbasynergy\Octoberspa;
 
 use System\Classes\PluginBase;
 
@@ -7,7 +7,7 @@ class Plugin extends PluginBase
     public function registerComponents()
     {
         return [
-            'ImbaSynergy\OctoberSpa\Components\Spa' => 'makeSpa'
+            'Imbasynergy\Octoberspa\Components\Spa' => 'makeSpa'
         ];
     }
 

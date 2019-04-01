@@ -1,12 +1,12 @@
 <?php 
-namespace ImbaSynergy\Octoberspa\Components;
+namespace Imbasynergy\Octoberspa\Components;
 
 class Spa extends \Cms\Classes\ComponentBase
 {
     public function componentDetails()
     {
         return [
-            'name' => 'October SPA',
+            'name' => 'makeSpa',
             'description' => 'Makes your website single-page.'
         ];
     }
