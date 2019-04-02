@@ -1,4 +1,4 @@
-<?php namespace ImbaSynergy\Octoberspa;
+<?php namespace ImbaSynergy\OctoberSpa;
 
 use System\Classes\PluginBase;
 

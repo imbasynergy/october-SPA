@@ -1,5 +1,5 @@
 <?php 
-namespace ImbaSynergy\Octoberspa\Components;
+namespace ImbaSynergy\OctoberSpa\Components;
 
 class Spa extends \Cms\Classes\ComponentBase
 {
