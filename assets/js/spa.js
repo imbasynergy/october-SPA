@@ -132,7 +132,7 @@ if (!window.SpaJs) {
                 }
                 $(linksArr[i]).on('click', function () {
                     if (this.href) {
-                        spajs.openURL(this.href);
+                        spajs.open(this.href);
                         return false;
                     };
                 }).attr('data-spa-link', 'true')
@@ -144,14 +144,18 @@ if (!window.SpaJs) {
                 if ($(spaLink[i]).attr('href') != undefined) {
                     if ($(spaLink[i]).attr('data-spa-link')) {
                         continue
-                    } else if ($(spaLink[i]).attr('data-request') || $(spaLink[i]).attr('href').charAt(0) == '#') {
+                    } else if ($(spaLink[i]).attr('data-request')) {
                         $(spaLink[i]).addClass('not-spa-link')
                         continue;
                     }
                     $(spaLink[i]).on('click', function () {
-                        if (this.href) {
-                            spajs.openURL(this.href);
+                        // debugger;
+                        if (this.href.split('#')[0] != window.location.href.split('#')[0]){
+                            spajs.open(this.href);
                             return false;
+                        } else if (this.href) {
+                            // spajs.open(this.href);
+                            return;
                         }
                     }).attr('data-spa-link', 'true')
                 }
@@ -159,6 +163,7 @@ if (!window.SpaJs) {
         };
 
         spajs.init = function (options) {
+            // debugger
             this.linkInit();
             if (spajs.initProgress === true) {
                 return;
@@ -218,17 +223,23 @@ if (!window.SpaJs) {
                 lastOnlineStatus = status;
             }, 500)
 
+            this.currentURL = window.location.href;
 
             if (spajs.opt.useHistoryApi) {
                 // Код обработки popstate перенесён сюда из spajs чтоб кнопка назад возвращала на список контактов и не дальше
-                // и даже если истории раньше небыло то всё равно кнопка назад ВСЕПГДА возвращала на список контактов
-                // по этому опция spajs.opt.useHistoryApi взята из spajs а не paradiseChat хоть это архетектурно не красиво
+                // и даже если истории раньше не было то всё равно кнопка назад ВСЕГДА возвращала на список контактов
+                // по этому опция spajs.opt.useHistoryApi взята из spajs а не paradiseChat хоть это архитектурно не красиво
 
                 //console.log("bind for popstate event")
                 //jQuery(window).bind('popstate', function(event)
-
+                // debugger;
                 window.addEventListener('popstate', function (event) {
-                    spajs.openMenuFromUrl(window.location.href, { after_push_state: true })
+                    // debugger
+                    if(window.location.href.split('#')[0] != spajs.currentURL.split('#')[0]){
+                        spajs.openMenuFromUrl(window.location.href, { after_push_state: true })
+                    } else {
+                        return;
+                    }
                 });
             }
             else {
@@ -245,6 +256,7 @@ if (!window.SpaJs) {
          * @example spajs.openURL("https://app.chat-server.comet-server.com/dev-18/t-chatterbox/") (Надо передавать полный урл)
          */
         spajs.openURL = function (url, title) {
+            // debugger
             var res = spajs.openMenuFromUrl(url, { withoutFailPage: true })
             if (!res) {
                 return false;
@@ -481,18 +493,6 @@ if (!window.SpaJs) {
 
         spajs.loadServerPage = function (url, after_push_state) {
             var def = new jQuery.Deferred();
-            // if (!after_push_state && url == window.location.href) {
-            //     console.info("page.opening")
-            //     $.when(spajs.pageLoaded).done(() => {
-            //         console.info("page.opend")
-            //         tabSignal.emit("loading.newPage")
-            //         tabSignal.emit("loading.newPage.once")
-            //         tabSignal.disconnectAllFromSignal("loading.newPage.once")
-
-            //         def.resolve()
-            //     })
-            //     return def.promise();
-            // }
 
             jQuery.ajax({
                 type: "POST",
@@ -523,6 +523,9 @@ if (!window.SpaJs) {
 
                     tabSignal.emit("loading.newPage")
 
+                    // tabSignal.on('loading.newPage', ()=>{
+                    //    $(window).trigger("load");
+
                     // вынести в конфиг класс или список классов
                     spajs.linkInit();
 
@@ -551,6 +554,9 @@ if (!window.SpaJs) {
          * @note выполняется синхронно но событие onOpen у пункта меню может работать не синхронно и зависит от реализыции колбека навешаного на onOpen
          */
         spajs.open = function (opt) {
+
+            this.currentURL = window.location.href;
+
             if (typeof opt == "string") {
                 opt = {
                     menuId: opt
@@ -604,6 +610,9 @@ if (!window.SpaJs) {
                     break;
                 }
             }
+
+
+            tabSignal.emit("loading.unload");
 
             //console.log("openMenu", menuId, menuInfo)
             if (!menuInfo || !menuInfo.onOpen) {
@@ -682,7 +691,7 @@ if (!window.SpaJs) {
             tabSignal.emit(spa_name + "spajsOpen", { menuInfo: menuInfo, data: data })
             var res = menuInfo.onOpen(spajs.opt.holder, menuInfo, data);
             if (res) {
-                debugger;
+                // debugger;
                 // in-loading
                 jQuery("body").addClass("in-loading")
 
@@ -733,8 +742,6 @@ if (!window.SpaJs) {
 
                 console.info("page.opend (1)")
                 tabSignal.emit("loading.newPage")
-                tabSignal.emit("loading.newPage.once")
-                tabSignal.disconnectAllFromSignal("loading.newPage.once")
             })
 
             return res.promise();
@@ -1131,10 +1138,15 @@ function setSpaPageType(type) {
     window.__lastSpaPageType = type
 }
 
-window.spajs.init({
-    holder: "#spa-page-content",
-    useHistoryApi: true,
-})
+// debugger
+
+$(document).ready(function(){
+    window.spajs.init({
+        holder: "#spa-page-content",
+        useHistoryApi: true,
+    });
+});
+
 
 window.tabSignal.on("page.loaded", () => {
     window.spajs.linkInit();
