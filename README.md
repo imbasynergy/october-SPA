@@ -1,3 +1,5 @@
+# https://octobercms.com/plugin/imbasynergy-octoberspa
+
 ## Plugin usage:
 - Add `[makeSpa]` component to your layout file to enable plugin features.
 

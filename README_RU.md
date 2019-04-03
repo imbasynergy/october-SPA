@@ -1,4 +1,4 @@
-# Readme (v0.2)
+# https://octobercms.com/plugin/imbasynergy-octoberspa
 
 ## Использование плагина:
 - Подключите компонент плагина October SPA на нужные страницы, или на layout файл,

@@ -247,6 +247,12 @@ if (!window.SpaJs) {
             }
         }
 
+        spajs.pushState = function(new_URL){
+            window.history.pushState({ page_new_url: new_URL }, new_URL, new_URL);
+            this.currentURL = window.location.href;
+            return;
+        }
+
         /**
          * Для обработки клика на ссылки
          * @param {string} url
@@ -620,7 +626,7 @@ if (!window.SpaJs) {
                 $.when(spajs.loadServerPage(page_new_url, opt.after_push_state)).done(() => {
                     $("body").removeClass("in-loading");
                     if (spajs.opt.useHistoryApi && !opt.after_push_state) {
-                        history.pushState({ page_new_url: page_new_url }, page_new_url, page_new_url);
+                        spajs.pushState(page_new_url);
                     }
                     def.resolve()
                 }).fail((err) => {
@@ -637,7 +643,7 @@ if (!window.SpaJs) {
             if (spajs.currentOpenMenu && menuInfo.id == spajs.currentOpenMenu.id && !opt.reopen) {
                 console.warn("Re-opening the menu", menuInfo)
                 if (spajs.opt.useHistoryApi && !opt.after_push_state) {
-                    history.pushState({ page_new_url: page_new_url }, page_new_url, page_new_url);
+                    spajs.pushState(page_new_url);
                 }
                 def.resolve()
                 return def.promise();
@@ -705,7 +711,7 @@ if (!window.SpaJs) {
                         // in-loading
                         jQuery("body").removeClass("in-loading")
                         if (spajs.opt.useHistoryApi && !opt.after_push_state) {
-                            history.pushState({ page_new_url: page_new_url }, page_new_url, page_new_url);
+                            spajs.pushState(page_new_url);
                         }
                         def.resolve()
                     }).fail(function (e) {
@@ -722,7 +728,7 @@ if (!window.SpaJs) {
             else {
                 jQuery("body").removeClass("in-loading")
                 if (spajs.opt.useHistoryApi && !opt.after_push_state) {
-                    history.pushState({ page_new_url: page_new_url }, page_new_url, page_new_url);
+                    spajs.pushState(page_new_url);
                 }
                 def.resolve()
                 res = def
